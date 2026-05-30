@@ -1,28 +1,24 @@
 /*
 Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
 // accountCmd represents the account command
 var accountCmd = &cobra.Command{
 	Use:   "account",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("account called")
-	},
+	Short: "Manage accounts",
+	Long: `can be used to create accounts, list accounts, and get account details.
+Example usage:
+  ledger account create "Checking Account"
+  ledger account list
+  ledger account get 1`,
+	// Run: func(cmd *cobra.Command, args []string) {
+	// 	fmt.Println("account called")
+	// },
 }
 
 func init() {

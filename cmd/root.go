@@ -4,8 +4,6 @@ Copyright © 2026 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 )
 
@@ -16,16 +14,25 @@ var rootCmd = &cobra.Command{
 	Long:  `A personal finance ledger built with Go, Cobra, SQLite and sqlc.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			_ = cmd.Help()
+			return
+		}
+		_ = cmd.Help()
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-	err := rootCmd.Execute()
-	if err != nil {
-		os.Exit(1)
-	}
+func Execute() error {
+	return rootCmd.Execute()
+}
+
+// ExecuteArgs runs the root command with the provided args.
+func ExecuteArgs(args []string) error {
+	rootCmd.SetArgs(args)
+	return rootCmd.Execute()
 }
 
 func init() {

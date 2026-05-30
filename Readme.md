@@ -5,6 +5,39 @@ It is designed to model real accounting principles with strict transaction balan
 
 ---
 
+## Quick Start
+
+1. Build the CLI:
+
+```bash
+go build -o ledger ./cmd/ledger
+```
+
+2. Run migrations to create the SQLite DB (`ledger.db`):
+
+```bash
+make migrate-up
+# or
+goose -dir internal/db/migration sqlite3 ledger.db up
+```
+
+3. Create an account:
+
+```bash
+./ledger account create "Checking"
+```
+
+4. Create a simple transaction (amount, description, accountID):
+
+```bash
+./ledger tx create --amount 12.34 --description "Grocery" --account 1
+# or positional
+./ledger tx create 12.34 "Grocery" 1
+```
+
+Services are wired in `cmd/ledger/main.go`. The binary expects `ledger.db` in the repository root.
+
+
 ## Core Concept
 
 This system implements **double-entry accounting**, where:
