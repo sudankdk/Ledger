@@ -1,5 +1,11 @@
 # Ledger CLI
 
+	_      _____  _____  _____  _____  _____
+ | |    |  ___||  ___||  ___||  ___||  ___|
+ | |    | |_   | |_   | |_   | |_   | |_   
+ | |___ |  _|  |  _|  |  _|  |  _|  |  _|  
+ |_____|_|    |_|    |_|    |_|    |_|    
+
 A lightweight double-entry accounting CLI and library built with Go, Cobra, SQLite, and sqlc.
 This repository provides a small ledger engine, an interactive CLI with history and completion, and a service layer that enforces atomic double-entry transactions.
 
