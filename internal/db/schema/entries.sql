@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS entries (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    transaction_id INTEGER NOT NULL,
+    account_id INTEGER NOT NULL,
+    amount INTEGER NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (transaction_id) REFERENCES "transaction" (id) ON DELETE CASCADE,
+    FOREIGN KEY (account_id) REFERENCES account (id) ON DELETE CASCADE
+);

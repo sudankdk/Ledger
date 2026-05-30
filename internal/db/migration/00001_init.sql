@@ -1,0 +1,27 @@
+-- +goose Up
+CREATE TABLE IF NOT EXISTS account (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS "transaction" (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    description TEXT,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS entries (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    transaction_id INTEGER NOT NULL,
+    account_id INTEGER NOT NULL,
+    amount INTEGER NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (transaction_id) REFERENCES "transaction" (id) ON DELETE CASCADE,
+    FOREIGN KEY (account_id) REFERENCES account (id) ON DELETE CASCADE
+);
+
+-- +goose Down
+DROP TABLE IF EXISTS entries;
+DROP TABLE IF EXISTS "transaction";
+DROP TABLE IF EXISTS account;
