@@ -12,7 +12,7 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "ledger",
-	Short: "A personal finance ledger cli application",
+	Short: "Double Entry Ledger CLI application",
 	Long:  `A personal finance ledger built with Go, Cobra, SQLite and sqlc.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
