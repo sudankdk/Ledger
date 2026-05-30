@@ -32,7 +32,7 @@ RETURNING id, transaction_id, account_id, amount, created_at
 type CreateEntryParams struct {
 	TransactionID int64
 	AccountID     int64
-	Amount        int64
+	Amount        float64
 }
 
 func (q *Queries) CreateEntry(ctx context.Context, arg CreateEntryParams) (Entry, error) {
@@ -49,7 +49,7 @@ func (q *Queries) CreateEntry(ctx context.Context, arg CreateEntryParams) (Entry
 }
 
 const createTransaction = `-- name: CreateTransaction :one
-INSERT INTO "transaction" (description)
+INSERT INTO transactions (description)
 VALUES (?)
 RETURNING id, description, created_at
 `
@@ -82,7 +82,7 @@ func (q *Queries) DeleteEntry(ctx context.Context, id int64) error {
 }
 
 const deleteTransaction = `-- name: DeleteTransaction :exec
-DELETE FROM "transaction"
+DELETE FROM transactions
 WHERE id = ?
 `
 
@@ -125,7 +125,7 @@ func (q *Queries) GetEntry(ctx context.Context, id int64) (Entry, error) {
 
 const getTransaction = `-- name: GetTransaction :one
 SELECT id, description, created_at
-FROM "transaction"
+FROM transactions
 WHERE id = ?
 `
 
@@ -202,7 +202,7 @@ func (q *Queries) ListEntries(ctx context.Context) ([]Entry, error) {
 
 const listTransactions = `-- name: ListTransactions :many
 SELECT id, description, created_at
-FROM "transaction"
+FROM transactions
 ORDER BY id
 `
 
@@ -258,7 +258,7 @@ RETURNING id, transaction_id, account_id, amount, created_at
 type UpdateEntryParams struct {
 	TransactionID int64
 	AccountID     int64
-	Amount        int64
+	Amount        float64
 	ID            int64
 }
 
@@ -281,7 +281,7 @@ func (q *Queries) UpdateEntry(ctx context.Context, arg UpdateEntryParams) (Entry
 }
 
 const updateTransaction = `-- name: UpdateTransaction :one
-UPDATE "transaction"
+UPDATE transactions
 SET description = ?
 WHERE id = ?
 RETURNING id, description, created_at

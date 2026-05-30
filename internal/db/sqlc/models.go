@@ -18,7 +18,7 @@ type Entry struct {
 	ID            int64
 	TransactionID int64
 	AccountID     int64
-	Amount        int64
+	Amount        float64
 	CreatedAt     string
 }
 
