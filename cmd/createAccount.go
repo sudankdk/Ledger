@@ -35,13 +35,26 @@ var createAccountCmd = &cobra.Command{
 	},
 }
 
+var listAccountsCmd = &cobra.Command{
+	Use:   "list",
+	Short: "List all accounts",
+	Long:  `Lists all accounts in the ledger.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("Listing accounts...")
+
+		accounts, err := Service.ListAccounts(context.Background())
+		if err != nil {
+			fmt.Printf("Error listing accounts: %v\n", err)
+			return
+		}
+		for _, account := range accounts {
+			fmt.Printf("- %s (ID: %d)\n", account.Name, account.ID)
+		}
+	},
+}
+
 func init() {
 	accountCmd.AddCommand(createAccountCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// createAccountCmd.PersistentFlags().String("foo", "", "A help for foo")
+	accountCmd.AddCommand(listAccountsCmd)
 
 }

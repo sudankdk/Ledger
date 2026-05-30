@@ -8,6 +8,11 @@ SELECT id, name, created_at
 FROM account
 WHERE id = ?;
 
+-- name: GetAccountByName :one
+SELECT id, name, created_at
+FROM account
+WHERE name = ?;
+
 -- name: ListAccounts :many
 SELECT id, name, created_at
 FROM account

@@ -104,6 +104,19 @@ func (q *Queries) GetAccount(ctx context.Context, id int64) (Account, error) {
 	return i, err
 }
 
+const getAccountByName = `-- name: GetAccountByName :one
+SELECT id, name, created_at
+FROM account
+WHERE name = ?
+`
+
+func (q *Queries) GetAccountByName(ctx context.Context, name string) (Account, error) {
+	row := q.db.QueryRowContext(ctx, getAccountByName, name)
+	var i Account
+	err := row.Scan(&i.ID, &i.Name, &i.CreatedAt)
+	return i, err
+}
+
 const getEntry = `-- name: GetEntry :one
 SELECT id, transaction_id, account_id, amount, created_at
 FROM entries

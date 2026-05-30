@@ -1,13 +1,13 @@
 package main
 
 import (
-	"bufio"
 	"database/sql"
 	"fmt"
 	"log"
 	"os"
-	"strings"
+	"path/filepath"
 
+	"github.com/peterh/liner"
 	"github.com/sudankdk/ledger/cmd"
 	dbservice "github.com/sudankdk/ledger/internal/db/service"
 	_ "modernc.org/sqlite"
@@ -36,24 +36,87 @@ func main() {
 		return
 	}
 
-	// Interactive REPL
-	scanner := bufio.NewScanner(os.Stdin)
+	// Interactive REPL with line editing & history
+	line := liner.NewLiner()
+	defer line.Close()
+	line.SetCtrlCAborts(true)
+
+	histFile := filepath.Join(".", ".ledger_history")
+	if f, err := os.Open(histFile); err == nil {
+		_, _ = line.ReadHistory(f)
+		f.Close()
+	}
+
+	completer := func(input string) (c []string) {
+		cmds := []string{"account create", "account list", "transfer", "help", "exit", "quit"}
+		for _, s := range cmds {
+			if len(input) == 0 || (len(input) <= len(s) && s[:len(input)] == input) || (len(input) > 0 && s[:len(input)] == input) {
+				c = append(c, s)
+			}
+		}
+		return
+	}
+	line.SetCompleter(func(lineStr string) (c []string) { return completer(lineStr) })
+
 	for {
-		fmt.Print("ledger> ")
-		if !scanner.Scan() {
-			fmt.Println()
+		input, err := line.Prompt("ledger> ")
+		if err != nil {
 			break
 		}
-		line := strings.TrimSpace(scanner.Text())
-		if line == "" {
+		input = string(input)
+		if input == "" {
 			continue
 		}
-		if line == "exit" || line == "quit" {
+		if input == "exit" || input == "quit" || input == "q" {
 			break
 		}
-		args := strings.Fields(line)
+		line.AppendHistory(input)
+		args := splitFields(input)
 		if err := cmd.ExecuteArgs(args); err != nil {
 			fmt.Printf("error: %v\n", err)
 		}
 	}
+
+	if f, err := os.Create(histFile); err == nil {
+		_, _ = line.WriteHistory(f)
+		f.Close()
+	}
+}
+
+// splitFields is like strings.Fields but keeps quoted substrings together.
+func splitFields(s string) []string {
+	var out []string
+	cur := ""
+	inQuotes := false
+	quoteChar := '\''
+	for i := 0; i < len(s); i++ {
+		ch := s[i]
+		if inQuotes {
+			if ch == byte(quoteChar) {
+				inQuotes = false
+				out = append(out, cur)
+				cur = ""
+			} else {
+				cur += string(ch)
+			}
+			continue
+		}
+		if ch == ' ' || ch == '\t' {
+			if cur != "" {
+				out = append(out, cur)
+				cur = ""
+			}
+			continue
+		}
+		if ch == '\'' || ch == '"' {
+			inQuotes = true
+			quoteChar = rune(ch)
+			continue
+		}
+		cur += string(ch)
+	}
+	if cur != "" {
+		out = append(out, cur)
+	}
+	return out
 }
